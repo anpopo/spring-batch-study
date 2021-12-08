@@ -10,12 +10,12 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @RequiredArgsConstructor
-@Configuration
+//@Configuration
 public class HelloJobConfiguration {
     private final JobBuilderFactory jobBuilderFactory;
     private final StepBuilderFactory stepBuilderFactory;
 
-    @Bean
+//    @Bean
     public Job helloJob() {
         return jobBuilderFactory.get("helloJob")
                 .start(helloStep1())
@@ -23,7 +23,7 @@ public class HelloJobConfiguration {
                 .build();
     }
 
-    @Bean
+//    @Bean
     public Step helloStep1() {
         return stepBuilderFactory.get("helloStep1")
                 .tasklet((stepContribution, chunkContext) -> {
@@ -35,7 +35,7 @@ public class HelloJobConfiguration {
                 .build();
     }
 
-    @Bean
+//    @Bean
     public Step helloStep2() {
         return stepBuilderFactory.get("helloStep2")
                 .tasklet((stepContribution, chunkContext) -> {

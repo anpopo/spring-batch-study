@@ -5,19 +5,18 @@ import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
-import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-//@Configuration
 @RequiredArgsConstructor
-public class DBJobConfiguration {
+@Configuration
+public class JobConfiguration {
 
     private final JobBuilderFactory jobBuilderFactory;
     private final StepBuilderFactory stepBuilderFactory;
 
-//    @Bean
+    @Bean
     public Job job() {
         return jobBuilderFactory.get("job")
                 .start(step1())
@@ -25,21 +24,21 @@ public class DBJobConfiguration {
                 .build();
     }
 
-//    @Bean
+    @Bean
     public Step step1() {
         return stepBuilderFactory.get("step1")
-                .tasklet((contribution, chunkContext) -> {
-                    System.out.println("step1 was executed");
+                .tasklet((stepContribution, chunkContext) -> {
+                    System.out.println("step 1 was executed");
                     return RepeatStatus.FINISHED;
                 })
                 .build();
     }
 
-//    @Bean
+    @Bean
     public Step step2() {
-        return stepBuilderFactory.get("step1")
-                .tasklet((contribution, chunkContext) -> {
-                    System.out.println("step2 was executed");
+        return stepBuilderFactory.get("step2")
+                .tasklet((stepContribution, chunkContext) -> {
+                    System.out.println("step 2 was executed");
                     return RepeatStatus.FINISHED;
                 })
                 .build();

@@ -45,7 +45,7 @@
     - 배치의 모든 초기화 및 실행 구성
     - 스프링 배치 자동 설정 클래스가 실행되고 빈으로 등록된 모든 job을 검색해 초기화와 동시에 job을 수행하도록 구성
 
--  스프링 배치 초기화 설정 클래스
+- 스프링 배치 초기화 설정 클래스
     - BatchAutoConfiguration
         - 스프링 배치가 초기화 될 때 자동으로 실행되는 설정 클래스
         - Job을 수행하는 JobLauncherApplicationRunner 빈을 생성
@@ -68,7 +68,60 @@
         - SimpleBatchConfiguration ( 프록시 객체 생성)
         - BatchConfigurerConfiguration (실제 객체 생성)
         - BatchAutoConfiguration (JobLauncherApplicationRunner)
-		
+
+      ### 2.2. 스프링 배치 DB 스키마 생성
+- Job 관련 테이블
+    - BATCH_JOB_INSTANCE
+        - job 이 실행될 때 JobInstance 정보가 저장
+        - job_name 과 job_key 를 키로해 하나의 데이터 저장
+        - 동일한 job_name 과 job_key 로 저장될 수 없다.
+
+    - BATCH_JOB_EXECUTION
+        - job의 실행 정보가 저장되며 job 생성, 시작, 종료 시간, 실행 상태, 메시지 등을 관리
+
+    - BATCH_JOB_EXECUTION_PARAMS
+        - job 과 함께 실행되는 JobParameter 정보를 저장
+
+    - BATCH_JOB_EXECUTION_CONTEXT
+        - Job 의 실행 동안 여러가지 상태 정보, 공유 데이터를 직렬화 (json 화) 해서 저장
+        - Step 간 서로 공유 가능
+
+- Step 관련 테이블
+    - BATCH_STEP_EXECUTION
+        - step 의 실행 정보가 저장되며 step 생성, 시작, 종료 시간, 실행 상태, 메시지 등을 관리
+
+    - BATCH_STEP_EXECUTION_CONTEXT
+        - Step 의 실행 동안 여러가지 상태 정보, 공유 데이터를 직렬화(json 화) 해서 저장
+        - Step 별로 저장되며 Step  간 공유 불가
+
+
+## 3. 스프링 배치 도메인 이해
+### 3.1 Job
+
+#### 3.1.1 기본 개념
+- 배치 계층 구조에서 가장 상위에 있는 개념
+    - 하나의 배치 작업 자체를 의미
+- Job Configuration 을 통해 생성되는 객체 단위
+    - 배치 작업을 어떻게 구성하고 실행할 것인지 전체적으로 설정하고 명세해 놓은 객체
+- 배치 Job 을 구성하기 위한 최상위 인터페이스
+    - 스프링 배치가 기본 구현체 제공
+- 여러 Step을 포함하고 있는 컨테이너로 반드시 한개 이상의 Step 을 포함해야 한다.
+
+#### 3.1.2 기본 구현체
+- SimpleJob
+    - 순차적으로 Step 을 실행시키는 Job
+    - 모든 Job 에서 사용할 수 있는 표준 기능
+- FlowJob
+    - 특정 조건과 흐름에 따라 Step을 구성하여 실행
+    - Flow 객체를 실행시켜 작업을 진행
+
+
+- Job - 최상위 인터페이스
+    - AbstractJob - Job 을 상속받는 추상 클래스, 다양한 필드 값 존재
+        - SimpleJob
+        - FlowJob
+        - AbstractJob 을 상속 받는 2개 클래스
+
 
 
 
