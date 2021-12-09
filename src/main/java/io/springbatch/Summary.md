@@ -123,7 +123,25 @@
         - AbstractJob 을 상속 받는 2개 클래스
 
 
+### 3.2 JobInstance
+- 배치 단계, 처리, 결과, 구성하는 도메인들
+    - Job, Step, Flow, Tasklet
+- 위의 도메인들이 실행될때 실행되는 정보들, 상태정보를 단계마다 데이터 베이스에 저장하는 용도로 생성되는 도메인들 - 메타데이터 저장용 도메인
+    - JobInstance, JobExecution, StepExecution 등
 
+#### 3.2.1 기본개념
+- Job 이 실행될 때 생성되는 Job의 논리적 실행 단위 객체
+    - 고유하게 식별 가능한 작업 실행을 나타냄
+- Job 의 설정과 구성은 동일
+    - Job 이 실행되는 시점에 처리하는 내용이 다르기 때문에 Job 을 구분해야 함
+- JobInstance 생성 및 실행
+    - 처음 시작하는 Job + JobParameter 의 경우
+        - 새로운 JobInstance 생성
+    - 이전과 동일한 Job + JobParameter 의 경우
+        - 이미 존재하는 JobInstance 리턴
+        - 기존 Job 이 있는 경우 같은 예외가 발생함.
+        - 이미 한번 실행된 Job 이기때문.
+- JobInstance 는 BATCH_JOB_INSTANCE 테이블과 매핑
 
 
 

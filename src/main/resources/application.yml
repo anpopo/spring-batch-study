@@ -28,8 +28,11 @@ spring:
       jdbc-url: jdbc:mysql://localhost:3306/spring_batch_study?useUnicode=true&characterEncoding=utf8
       username: root
       password: 1234
-      driver-class-name: com.mysql.jdbc.Driver
+      driver-class-name: com.mysql.cj.jdbc.Driver
 
   batch:
     jdbc:
       initialize-schema: never
+
+    job:
+      enabled: false
