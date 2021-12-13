@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: local
+    active: mysql
 
 ---
 
@@ -35,4 +35,4 @@ spring:
       initialize-schema: never
 
     job:
-      enabled: false
+      enabled: true

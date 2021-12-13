@@ -143,6 +143,37 @@
         - 이미 한번 실행된 Job 이기때문.
 - JobInstance 는 BATCH_JOB_INSTANCE 테이블과 매핑
 
+### 3.3 JobParameter
+#### 3.3.1 기본 개념
+- Job 실행시 함께 포함되어 사용되는 파라미터
+- 하나의 Job에 존재할 수 있는 여러개의 JobInstance 를 구분하기 위한 용도
+- JobParameter 와 JobInstance 는 1:1
+
+#### 3.3.2 생성 및 바인딩
+1. 어플리케이션 실행시 주입
+    - java -jar spring batch name=sehyeong seq(long)=2L date(date)=2021/01/08 age(double)=16.5
+    - 해당 타입에 맞게 괄호 안에 타입을 넣어 주어야 한다
+2. 코드로 생성
+    - JobParameterBuilder, DefaultJobParametersCoverter
+3. SpEL 이용
+    - @Value("#{jobParameter[requestDate]}"), @JobScope, @StepScope 선언 필수
+
+#### 3.3.3 BATCH_JOB_EXECUTION_PARAM 테이블과 매핑
+- JOB_EXECUTION 과 1: m 관계
+
+
+### 3.4 JobExecution
+#### 3.4.1 기본 개념
+- JobInstance 에 대한 한번의 시도를 의미하는 객체
+- Job 실행중 발생한 정보를 저장하고 있는 객체
+
+- JobInstance 와의 관계
+    - JobExecution 은 FAILED / COMPLETE 등 의 실행 결과를 가지고 있음
+    - Complete 일 경우 JobInstance 의 실행이 완료된 것으로 간주 / 재 실행 불가
+    - FAILED 의 경우 재 실행이 가능
+        - 같은 값의 JobParameter 를 통해 실행 가능
+    - JobExecution 의 실행 결과가 COMPLETE 가 될 때까지 하나의 JobInstance 내에서 여러 번의 시도가 생길 수 있음
+- JobInstance 와 JobExecution 은 1:M 의 관계로 JobInstance 에 대한 성공 / 실패 내역을 가지고 있음
 
 
 
