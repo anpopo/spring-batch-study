@@ -176,6 +176,63 @@
 - JobInstance 와 JobExecution 은 1:M 의 관계로 JobInstance 에 대한 성공 / 실패 내역을 가지고 있음
 
 
+### 3.5 Step
+#### 3.5.1 기본 개념
+- Batch Job 을 구성하는 독립적인 단계
+- 실제 배치 처리를 정의하고 컨트롤 하는데 필요한 정보를 담고있음
+- 단순한 태스크 부터 복잡한 비지니스 로직까지 처리할 수 있는 설정을 담고 있다.
+- Job 의 세부 작업을 태스크 기반으로 설정하고 명세해 놓은 객체
+- 모든 Job 은 하나 이상의 Step 으로 구성
+
+#### 3.5.2 구성
+- TaskletStep
+    - 기본이 되는 Step 클래스로 Tasklet 타입의 구현체 제어
+- PartitionStep
+    - 멀티 스레드 방식의 Step 분리 실행
+- JobStep
+    - Step 내부에 Job 구성
+- FlowStep
+    - Step 내부에 Flow 구성
+
+#### 3.5.3. 설계 이해
+- 최상단 인터페이스인 Step
+    - execute 라는 메소드 존재
+        - StepExecution 을 argument 로 받음
+        - Step 실행에 대한 정보를 저장
+- Step 을 구현한 추상 클래스 AbstractStep
+- 추상 클래스를 상속받는 4개의 Step
+    - TaskletStep
+    - PartitionStep
+    - JobStep
+    - FlowStep
+    
+
+### 3.6 지금까지를 바탕으로 정리해본 BatchJob 실행 내부 구조
+1. Configuration 에서 job / step 구성
+2. JobBuilderFactory / StepBuilderFactory 클래스를 이용해 Job / Step 타입의 객체를 생성
+3. SimpleJobBuilder 클래스에서 실질적으로 Job 을 생성하고 생성된 Step 을 SimpleJobBuilder 내부의 steps 필드에 리스트 저장
+4. JobLauncherApplicationRunner 에서 Job 실행함
+    1. executeLocalJobs 메소드  -> jobs 에 iterator 를 돌면서 다음 job 이 있으면 하나씩 execute 메소드 실행
+    2. execute 메소드에서 JobParameter 를 가져온 후 JobLauncher 의 run 으로 실질적으로 Job 을 수행함
+        1. JobLauncher 는 인터페이스 구현체는 SimpleJobLauncher 를 사용
+5. AbstractJob 은 추상 클래스이고 Job 을 구현하고 있음
+    1. AbstractJob 의 execute 메소드에서 doExecute 메소드 호출
+    2. doExecute 메소드는 추상 메소드로 자식에서 실질적인 구현이 필요
+    3. FlowJob / SimpleJob 에 따라 다른 기능
+6. Configuration 에서 생성한 Job 은 SimpleJob 으로 구성했기 때문에 SimpleJob 의 doExecution 메소드가 실행됨
+    1. StepHandler 에서 step 의 실행을 처리
+    2. 이것도 부모의 AbstractJob 에 있는 handleStep 메소드를 호출하고
+    3. StepHandler 인터페이스를 구현한 SimpleStepHandler 에 있는 handleStep 이 호출됨
+    4. 결국 처리는 SimpleStepHandler 의 handleStep 메소드
+7. SimpleJob 에 있는 steps (List<Step>) 에서 각각의 step 을 가져와 execute 메소드 호출
+    1. execute 메소드 호출은 AbstractStep 의 execute 메소드로 호출 되어짐
+    2. execute 메소드에서 doExecute 메소드를 호출함
+        1. job 과 마찬가지로 우리가 Configuration 에서 구성한 Step 의 종류에 따라 (TaskletStep, PartitionStep, JobStep, FlowStep) doExecute 메소드가 호출됨
+8. step 내부에 구성된 tasklet 을 execute 함 ( 이부분 좀더 서칭 필요 )
+    1. TaskletStep 내부 구성된 ChunkTransactionCallBack 클래스에서 TransactionCallBack 인터페이스를 구현하고 있음
+    2. TransactionCallBack 인터페이스 내부 doInTransaction 메소드를 ChunkTransactionCallBack 클래스가 구현
+    3. 하나의 트랜젝션 안에서 Tasklet 의 execute 메소드 호출
+    4. Configuration 에서 Step 을 구성할 때 등록한 Tasklet 의 execute 메소드 호출크.... 구조...
 
 
 
