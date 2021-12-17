@@ -214,7 +214,7 @@
 4. JobLauncherApplicationRunner 에서 Job 실행함
     1. executeLocalJobs 메소드  -> jobs 에 iterator 를 돌면서 다음 job 이 있으면 하나씩 execute 메소드 실행
     2. execute 메소드에서 JobParameter 를 가져온 후 JobLauncher 의 run 으로 실질적으로 Job 을 수행함
-        1. JobLauncher 는 인터페이스 구현체는 SimpleJobLauncher 를 사용
+        1. JobLauncher 는 인터페이스, 구현체는 SimpleJobLauncher 를 사용
 5. AbstractJob 은 추상 클래스이고 Job 을 구현하고 있음
     1. AbstractJob 의 execute 메소드에서 doExecute 메소드 호출
     2. doExecute 메소드는 추상 메소드로 자식에서 실질적인 구현이 필요
@@ -234,6 +234,34 @@
     3. 하나의 트랜젝션 안에서 Tasklet 의 execute 메소드 호출
     4. Configuration 에서 Step 을 구성할 때 등록한 Tasklet 의 execute 메소드 호출크.... 구조...
 
+
+### 3.6 StepExecution
+#### 3.6.1 기본 개념
+- Step 에 대한 한번의 시도를 의미하는 객체
+- Step 실행 중 발생한 정보를 저장하고 있는 객체
+- Job 을 재 시작 하더라도 이미 성공적으로 완료된 Step 은 재실행 되지 않음
+    - 이미 성공한 Step 도 재시작이 가능한 설정 옵션이 있음.
+- 실제 Step 이 실행되는 시점에 StepExecution 을 생성한다.
+- JobExecution 과의 관계
+    - StepExecution 이 모두 정상적으로 완료 되어야지 JobExecution 이 완료된다.
+    - StepExecution 이 하나라도 실패시 JobExecution 은 실패
+- JobExecution 과 StepExecution 과는 1:M 관계
+
+
+### 3.7 StepContributioin
+#### 3.7.1 기본 개념
+- 청크 프로세스 (덩어리 단위로 실행되어지는 묶음들로 이해하자) 의 변경 사항을 버퍼링한 후 StepExecution 상태를 업데이트 하는 도메인 객체
+- 청크 단위 프로세스 커밋 직전 StepExecution 의 apply 메소드를 호출해 상태를 업데이트 함
+- ExitStatus 기본 종료 코드 외 사용자 정의 종료 코드를 생성해 적용할 수 있음
+
+
+- TaskletStep 에서 시작되는 flow
+    - TaskletStep 내부 ChunkTransactionCallBack 클래스를 생성하면서 StepExecution 할당
+    - StepExecution 이 StepContribution  생성
+    - tasklet 의 execute 메소드 실행
+        - 사용자가 Configuration 에 직접 구성한 Tasklet
+    - Tasklet 에서 커밋이 발생하기 전 stepExecution 의 apply 메소드 실행
+        - apply 메소드의 파라미터로 넘어가는 stepContribution 에 있는 각각의 값들을 step execution 에 적용시키는 과정
 
 
 
