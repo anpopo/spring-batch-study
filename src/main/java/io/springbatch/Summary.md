@@ -245,10 +245,10 @@
 - JobExecution 과의 관계
     - StepExecution 이 모두 정상적으로 완료 되어야지 JobExecution 이 완료된다.
     - StepExecution 이 하나라도 실패시 JobExecution 은 실패
-- JobExecution 과 StepExecution 과는 1:M 관계
+- JobExecution 과 StepExecutioㄸn 과는 1:M 관계
 
 
-### 3.7 StepContributioin
+### 3.7 StepContribution
 #### 3.7.1 기본 개념
 - 청크 프로세스 (덩어리 단위로 실행되어지는 묶음들로 이해하자) 의 변경 사항을 버퍼링한 후 StepExecution 상태를 업데이트 하는 도메인 객체
 - 청크 단위 프로세스 커밋 직전 StepExecution 의 apply 메소드를 호출해 상태를 업데이트 함
@@ -264,6 +264,14 @@
         - apply 메소드의 파라미터로 넘어가는 stepContribution 에 있는 각각의 값들을 step execution 에 적용시키는 과정
 
 
-
+### 3.8 ExecutionContext
+#### 3.8.1 기본 개념
+- 프레임 워크에서 유지 및 관리하는 키 / 값 으로 된 컬렉션
+- StepExecution , JobExecution 의 상태를 저장하는 공유 객체
+- DB 에 직렬화된 값으로 저장 - 단순 텍스트
+- 공유하는 범위
+    - Step  - 각 Step 의 StepExecution 에 저장되면 Step 간 공유 불가
+    - Job - 각 JobExecution 에 저장되며 Job 간 공유 불가, 해당 Job 의 Step 간 공유 가능
+- Job 재시작 시 이미 처리한 Row 데이터는 건너뛰고 이후로 수행하도록 할 때 상태 정보 활용 
 
 
