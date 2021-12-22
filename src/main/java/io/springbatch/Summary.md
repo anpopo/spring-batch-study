@@ -275,3 +275,25 @@
 - Job 재시작 시 이미 처리한 Row 데이터는 건너뛰고 이후로 수행하도록 할 때 상태 정보 활용 
 
 
+### 3.9 JobRepository
+#### 3.9.1 배치 작업의 정보를 저장하는 저장소 역할
+- 배치 작업의 수행과 관련된 모든 메타데이터를 저장함
+    - JobLauncher, Job, Step 구현체 내부에서 CRUD 기능 처리
+
+#### 3.9.2 JobRepository 설정
+- @EnableBatchProcessing 어노테이션만 선언하면 JobRepository 가 자동으로 빈 생성
+- BatchConfigurer 인터페이스를 구현하거나 BasicBatchConfigurer 를 상속해 커스터 마이징이 가능하다.
+    - JDBC 방식 설정
+        - JobRepositoryFactoryBean
+            - 내부적으로 AOP 기술을 통해 트랜젝션 처리
+            - 트랜젝션 Isolation 의 기본값은 Serializable 로 최고 수준,
+                - 다른 레벨로 지정 가능
+                    - Read Committed
+                    - Repeatable Read
+            - 메타 테이블의 prefix 를 변경 가능
+    - In Memory 방식 설정
+        - MapJobRepositoryFactoryBean
+            - 성능 등의 이유로 도메인을 데이터 베이스에 저장하고 싶지 않은 경우
+            - Test 혹은 프로토 타입 등의 빠른 개발에 사용
+
+
