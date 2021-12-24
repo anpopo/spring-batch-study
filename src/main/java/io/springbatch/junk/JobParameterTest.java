@@ -1,4 +1,4 @@
-package io.springbatch;
+package io.springbatch.junk;
 
 //@Component
 //@RequiredArgsConstructor

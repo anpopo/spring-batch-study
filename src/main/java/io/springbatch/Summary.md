@@ -297,3 +297,32 @@
             - Test 혹은 프로토 타입 등의 빠른 개발에 사용
 
 
+### 3.10 JobLauncher
+#### 3.10.1 기본 개념
+- Job 을 실행시키는 역할
+- Job 과 JobParameter 를 인자로 받아 최종 JobExecution 을 반환
+- 스프링부트 배치가 구동시 JobLauncher 빈이 자동 생성됨.
+- Job 실행
+    - JobLauncher.run(Job, JobParameter)
+    - 스프링 부트 배치에서는 JobLauncherApplicationRunner 가 자동적으로 JobLauncher 를 실행
+    - 동기적 실행
+        - taskExecutor 를 SyncTaskExecutor 로 설정 - 기본값
+        - JobExecution 을 얻고 최종 배치 처리 완료 후 JobExecution을 클라이언트에게 반환
+        - 스케줄러에 의한 배치처리에 적합
+    - 비 동기적 실행
+        - taskExecutor 를 SimpleAsyncTaskExecutor 로 설정
+        - JobExecution 을 얻고 JobExecution을 바로 클라이언트에게 반환 후 배치 처리를 완료한다.
+        - Http 요청에 의한 배치 처리에 적합
+            - 배치 처리가 긴 경우 응답이 늦어지지 않도록 함
+        - 즉답적인 응답이 생기기 때문에 빠른 속도로 응답할 수 있다.
+            - 다만 ExitStatus 가 Unknown
+
+- Application 이 실행될 때 Batch 가 실행되는 내부 Flow
+    - BatchAutoConfiguration 클래스에서 JobLauncherApplicationRunner 를 생성
+    - JobLauncherApplicationRunner 클래스는 ApplicationRunner 인터페이스를 구현하고 있으며 run 메소드를 오버라이드한다.
+        - 스프링 프로젝트 초기화 완료 후 ApplicationRunner 를 구현한 구현체의 run 메소드를 실행시킨다.
+    - JobLauncherApplicationRunner 의 run 메소드에선 arguments 를 셋팅하고 최종적으로 execute 메소드에서 JobLauncher 를 통해 Job 을 실행시킨다.
+        - jobLauncher.run(Job, JobParameters) 호출
+
+
+

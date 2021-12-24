@@ -19,14 +19,14 @@ public class JobRepositoryConfiguration {
 
     private final JobBuilderFactory jobBuilderFactory;
     private final StepBuilderFactory stepBuilderFactory;
-    private final JobExecutionListener jobExecutionListener;
+//    private final JobExecutionListener jobExecutionListener;
 
     @Bean
     public Job job() {
         return jobBuilderFactory.get("job")
                 .start(step1())
                 .next(step2())
-                .listener(jobExecutionListener)
+//                .listener(jobExecutionListener)
                 .next(step3())
                 .next(step4())
                 .build();

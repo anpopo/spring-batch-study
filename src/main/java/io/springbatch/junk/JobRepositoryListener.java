@@ -1,11 +1,11 @@
-package io.springbatch;
+package io.springbatch.junk;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.batch.core.*;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.stereotype.Component;
 
-@Component
+//@Component
 @RequiredArgsConstructor
 public class JobRepositoryListener implements JobExecutionListener {
 
@@ -28,7 +28,7 @@ public class JobRepositoryListener implements JobExecutionListener {
                 BatchStatus status = st.getStatus();
                 ExitStatus exitStatus = st.getExitStatus();
 
-                System.out.println(exitStatus + " / " + status + " ? " +  st.getStepName());
+                System.out.println(exitStatus + " / " + status + " / " +  st.getStepName());
             }
         }
 

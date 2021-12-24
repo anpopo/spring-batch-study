@@ -1,4 +1,4 @@
-package io.springbatch;
+package io.springbatch.junk;
 
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.repository.support.JobRepositoryFactoryBean;
@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
 
 import javax.sql.DataSource;
 
-@Configuration
+//@Configuration
 public class CustomBatchConfigurer extends BasicBatchConfigurer {
 
     private final DataSource dataSource;
