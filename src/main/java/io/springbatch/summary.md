@@ -33,3 +33,18 @@ batch:
 
 ## 2. Job 과 Step
 - 도메인적인 관계보단 실행적인 측면에서의 구성과 메소드 실행 등에 대해 알아본다.
+### 2.1 JobBuilderFactory
+- 스프링 배치는 Job 과 Step 을 쉽게 생성 및 설정할 수 있도록 util 성격의 빌더 클래스 제공
+- JobBuilderFactory
+  - JobBuilder 를 제공하는 Factory 클래스
+  - jobBuilderFactory.get("jobName")
+    - jobName 은 스프링 배치가 Job 을 실행시킬 때 참조하는 Job 의 이름
+    - job 의 이름은 db 에도 저장된다.
+- JobBuilder
+  - job 을 구성하는 설정 조건에 따라 두 개의 하위 빌더 클래스를 생성하고 실제 Job 생성 위임
+  - SimpleJobBuilder
+    - SimpleJob 생성
+    - Job 실행과 관련된 여러 설정 api 제공
+  - FlowJobBuilder
+    - FlowJob 생성
+    - Flow 실행과 관련된 여러 설정 api 제공
